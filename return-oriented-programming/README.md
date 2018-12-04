@@ -125,24 +125,22 @@ Yeah but how are we gonna call system with a shell lets say "/bin/sh" since it i
 
 Here is where ROP technique comes to the rescue, what rop basically does is chaining functions together but how you might ask. 
 We basically creating a new stack frame on top of the other.
-As we saw earlier every function has a return address, it needs to know when it is finished where to return to, yeah we overwrote that earlier hah. Jokes aside, that goes for every living function out there. 
+As we saw earlier every function has a return address, it needs to know when it is finished where to return to. 
+That goes for every living function out there. 
 
-Now the stack goes as follows:
+Now the stack as we already goes as follows:
 
 - call to the function
 - return address 
 - arguments
 
-With that particular order so ret address goes immediately after the function.
+With that particular order so ret address goes immediately after the function call.
 
-Now calling a function or returning to a function (ret2libc) after the buffer overrun we are basically creating a new stack frame.
 
-Here we are going to use the two functions we found earlier to achieve our goal, and a section (.bss since its writable) from the binary in order to store our "/bin/sh" string.
-
-Finding out how strcpy works will help us in order to find out how we can copy our string into some memory point by us in .
+Finding out how strcpy works will help us in order to find out how we can copy our string into some memory point by us.
 From the C manual we see that strcpy function goes as follows:
 
-The strcpy() function copies the string pointed by source (including the null character) to the character array destination. "
+"The strcpy() function copies the string pointed by source (including the null character) to the character array destination. "
 
 ```char* strcpy(char* destination, const char* source);```
 
@@ -156,6 +154,7 @@ How are we gonna do that ?
 What we are looking for here are "gadgets" what these will actually do is help us chain functions together.
 Gadgets are small instructions sequences ending with a "ret" instruction.
 What this will do is pop the arguments from the stack and execute them. 
+Remember "strcpy" function takes two arguments so we need a pop pop ret instruction.
 
 A tool that does that job is ROPgadget.
 
@@ -187,7 +186,7 @@ ROPgadget --binary rop
 0x08048397 : xchg eax, esi ; add al, 8 ; cmp eax, 6 ; ja 0x80483aa ; ret
 ```
 We are gonna choose "0x080484f7" to do our work.
-Remember "strcpy" function takes two arguments so we need a pop pop ret instruction.
+
 We also need the "/bin/sh" characters in bytes of course in order to craft our string.
 ROPgadget again to the rescue 
 
