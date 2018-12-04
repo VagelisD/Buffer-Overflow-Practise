@@ -135,15 +135,17 @@ Now the stack as we already know goes as follows:
 
 With that particular order so ret address goes immediately after the function call.
 
-Finding out how strcpy works will help us in order to find out how we can copy our string into some memory point by us.
+Finding out how strcpy works will help us in order to find out how we can copy our string into some writable memory pointed by us.
 
 From the C manual we see that strcpy function goes as follows:
 
 > "The strcpy() function copies the string pointed by source (including the null character) to the character array destination." 
 
 > "char* strcpy(char* destination, const char* source);
+ 
+So strcpy takes two arguments on for destination and another for source 
 
-So the plan here is to create our string "/bin/sh" byte-by-byte into a memory which is writable. That's why i chose an address from .bss section because it is unaffected from ASLR and it has pleny of space to store our string.
+So the plan here is to create our string "/bin/sh" byte-by-byte into a memory which is writable. That's why i chose an address from .bss section as you will see later because it is unaffected from ASLR and it has pleny of space to store our string.
 
 Now remember when i said that every function needs a return address ? 
 Yeah, when we done copying one byte in order to copy the next one we need to re-call strcpy function again right?
