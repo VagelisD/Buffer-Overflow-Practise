@@ -30,17 +30,17 @@ Compiled with NX so stack is not executable (readelf -l rop) :
 GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x4
 ```
 
-We saw what kind of protections the binary has, now onto the exploitation part.
+We saw what kind of protections the binary has, let's proceed.
 
-We could try and brute force the addresses since it is a 32bit binary but let's use other methods, more effective in order to bypass the ASLR. 
+We could try and brute force the addresses since it is a 32bit binary but let's use other methods, more effective in order to bypass ASLR. 
 
 The method we are going to use is similar to "ret2plt", we are returning to functions already present in the binary but  what functions are we going to take advantage of?
 
-Let's think about what exactly is our plan here, what functions exactly are we going to call.
-After all it all comes down to popping a new shell with elevated privileges right..? well most of the times ;) 
+Let's think about this for a moment, what functions exactly are we going to call?
 
+After all it all comes down to popping a new shell with elevated privileges right..?
 
-First, lets debug our binary in order to get an idea of what is hapenning.
+First things first, lets debug our binary in order to get an idea of what is hapenning.
 
 ```
 Dump of assembler code for function main:
@@ -64,7 +64,7 @@ Dump of assembler code for function main:
    0x08048485 <+57>:    ret    
 ```
 
-Aha, `0x8048320 <strcpy@plt>` and `0x8048330 <system@plt>`
+Aha, `0x8048320 <strcpy@plt>` and `0x8048330 <system@plt>` 
 
 First of what is that *@plt* you might ask, well it stands for "Procedure Linkage Table" but because explaining this is out of scope i'll put some references below if you want to know more about it in detail.
 
@@ -118,7 +118,7 @@ What do we have so far ?
 - ASLR and NX enabled (so sniffing shellcode inside the stack and hardcoding a return address is not an option)
 - Functions already present in the binary which they might prove to be useful (system and strcpy)
 
-So we have a two functions which are useful, more important system!!
+We have two functions which are useful, more important system!!
 
 Yeah but how are we gonna call system with a shell lets say "/bin/sh" since it is not in the binary? 
 
@@ -127,7 +127,7 @@ We basically creating a new stack frame on top of the other.
 As we saw earlier every function has a return address, it needs to know when it is finished where to return to. 
 That goes for every living function out there. 
 
-Now the stack as we already goes as follows:
+Now the stack as we already know goes as follows:
 
 - call to the function
 - return address 
