@@ -37,9 +37,8 @@ We could try and brute force the addresses since it is a 32bit binary but let's 
 The method we are going to use is similar to "ret2plt", we are returning to functions already present in the binary but  what functions are we going to take advantage of?
 
 Let's think about what exactly is our plan here, what functions exactly are we going to call.
-After all it all comes down to popping a new shell with elevated privileges right.. well most of the times ;)  ? 
+After all it all comes down to popping a new shell with elevated privileges right..? well most of the times ;) 
 
-Lets make a plan of what we are going to need.
 
 First, lets debug our binary in order to get an idea of what is hapenning.
 
@@ -67,7 +66,7 @@ Dump of assembler code for function main:
 
 Aha, `0x8048320 <strcpy@plt>` and `0x8048330 <system@plt>`
 
-What is that plt you might ask, well it stands for "Procedure Linkage Table" but because explaining this is out of scope i'll put some references below if you want to know more about it in detail.
+First of what is that plt you might ask, well it stands for "Procedure Linkage Table" but because explaining this is out of scope i'll put some references below if you want to know more about it in detail.
 
 Another intersting thing to notice is the size of the buffer, 4th line : `0x08048452 <+6>:     sub    esp,0x410` dont ask me how i know this.
 
