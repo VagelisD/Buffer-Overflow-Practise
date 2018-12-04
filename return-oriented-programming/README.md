@@ -66,7 +66,7 @@ Dump of assembler code for function main:
 
 Aha, `0x8048320 <strcpy@plt>` and `0x8048330 <system@plt>`
 
-First of what is that plt you might ask, well it stands for "Procedure Linkage Table" but because explaining this is out of scope i'll put some references below if you want to know more about it in detail.
+First of what is that *@plt* you might ask, well it stands for "Procedure Linkage Table" but because explaining this is out of scope i'll put some references below if you want to know more about it in detail.
 
 Another intersting thing to notice is the size of the buffer, 4th line : `0x08048452 <+6>:     sub    esp,0x410` dont ask me how i know this.
 
@@ -135,15 +135,15 @@ Now the stack as we already goes as follows:
 
 With that particular order so ret address goes immediately after the function call.
 
-
 Finding out how strcpy works will help us in order to find out how we can copy our string into some memory point by us.
+
 From the C manual we see that strcpy function goes as follows:
 
-"The strcpy() function copies the string pointed by source (including the null character) to the character array destination. "
+> "The strcpy() function copies the string pointed by source (including the null character) to the character array destination." 
 
-```char* strcpy(char* destination, const char* source);```
+char* strcpy(char* destination, const char* source);
 
-So the plan here is to create our string "/bin/sh" byte-by-byte into a memory which is writable. That's why i chose an address from .bss section it is unaffected from ASLR and it has pleny of space to store our string.
+So the plan here is to create our string "/bin/sh" byte-by-byte into a memory which is writable. That's why i chose an address from .bss section because it is unaffected from ASLR and it has pleny of space to store our string.
 
 Now remember when i said that every function needs a return address ? 
 Yeah, when we done copying one byte in order to copy the next one we need to re-call strcpy function again right?
@@ -223,6 +223,13 @@ strcpy@plt + pop_pop_ret_gadget  + (bss + 3) + "n"
 strcpy@plt + pop_pop_ret_gadget  + (bss + 4) + "/"
 strcpy@plt + pop_pop_ret_gadget  + (bss + 5) + "s"
 strcpy@plt + pop_pop_ret_gadget  + (bss + 6) + "h"
-system@plt + AAAA (ret_addr) + bss # AAAA as a ret_addr because we don't actually care where system is going to return to and  we are using the initial address of bss because now contains the whole string "/bin/sh"
+system@plt + AAAA (ret_addr) + bss # AAAA as a ret_addr because we don't actually care where system is going to return to when is finished and we are using the initial address of bss because now contains the whole string "/bin/sh"
 ```
 That's it.
+
+
+## References
+
+[How plt and got works](https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html)
+[ROPgadget tool](https://github.com/JonathanSalwan/ROPgadget)
+[
