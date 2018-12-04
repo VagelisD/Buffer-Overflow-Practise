@@ -96,7 +96,7 @@ Stack level 0, frame at 0xbffff880:
   eip at 0xbffff87c
  ```
  
- eip at **0xbffff87c**, right so, lets take a look at the Stack: 
+ eip at **0xbffff87c** , right so, lets take a look at the Stack: 
  
 ```
 (gdb) x/10xw $esp
