@@ -1,3 +1,3 @@
 # Buffer-Overflow-Practise
 
-Basically a section about putting down some of the buffer overflow basics.
+Basically a section about putting down some of the basics regarding buffer overflow.
