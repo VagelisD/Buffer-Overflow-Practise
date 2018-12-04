@@ -70,7 +70,7 @@ First of what is that *@plt* you might ask, well it stands for "Procedure Linkag
 
 Another intersting thing to notice is the size of the buffer, 4th line : `0x08048452 <+6>:     sub    esp,0x410` dont ask me how i know this.
 
-Now everything here is represented in hex (base-16) so in order to find out the size of the buffer convert the number "410" base-16 to base-10, well that's one way to do it there are others also. 
+Now everything here is represented in hex (base-16) so in order to find out the size of the buffer convert the number "410" base-16 to base-10.
 
 Allright, since we know our binary is vulnerable to a buffer overflow it is time to find out how many bytes it requires to overwrite the return address
 
@@ -114,8 +114,8 @@ Anyway lets proceed.
 
 What do we have so far ?
 
-- 1040 bytes to overwrite ret address 
-- ASLR and NX enabled (so sniffing shellcode inside the stack or hardcoding a return address is not an option)
+- 1034 bytes to overwrite ret addr 
+- ASLR and NX enabled (so sniffing shellcode inside the stack and hardcoding a return address is not an option)
 - Functions already present in the binary which they might prove to be useful (system and strcpy)
 
 So we have a two functions which are useful, more important system!!
