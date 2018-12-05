@@ -1,4 +1,4 @@
-# Return oriented programming at its simplest form.
+# Return oriented programming at its simplest
 
 `rop.c` binary
 
