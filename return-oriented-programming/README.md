@@ -68,7 +68,7 @@ Aha, `0x8048320 <strcpy@plt>` and `0x8048330 <system@plt>`
 
 First of what is that *@plt* you might ask, well it stands for "Procedure Linkage Table" but because explaining this is out of scope i'll put some references below if you want to know more about it in detail.
 
-Another intersting thing to notice is the size of the buffer, 4th line : `0x08048452 <+6>:     sub    esp,0x410` dont ask me how i know this.
+Another intersting thing to notice is the size of the buffer, 4th line : `0x08048452 <+6>:     sub    esp,0x410`.
 
 Now everything here is represented in hex (base-16) so in order to find out the size of the buffer convert the number "410" base-16 to base-10.
 
@@ -108,34 +108,27 @@ Stack level 0, frame at 0xbffff880:
 0xbffff898:     0xb7ffeff4      0x0804826f
 ```
 
-We can see here that in order to overwrite the return address we need additional 4 byte but that's the *sweet* spot because later on the return address would be a function of our choosing and that's where things are getting interesting ;) 
+We can see here that in order to overwrite the *return address* we need an additional 4 byte, that's the *sweet* spot because later we will overwrite the *return address* with a function of our choosing and that's where things are getting interesting ;) 
 
 Anyway lets proceed.
 
 What do we have so far ?
 
-- 1036 exactly before overwriting the return address
-- ASLR and NX enabled (so sniffing shellcode inside the stack and hardcoding a return address is not an option)
-- Functions already present in the binary which they might prove to be useful (system and strcpy)
+- 1036 bytes exactly before overwriting the return address
+- ASLR and NX enabled (so putting shellcode inside the stack and hardcoding a return address is not an option)
+- Functions already present in the binary which they might be useful (*system* and *strcpy*)
 
-We have two functions which are useful, more important system!!
 
-Yeah but how are we gonna call system with a shell lets say "/bin/sh" since it is not in the binary? 
+Yeah but how are we gonna call *system* with a shell lets say *"/bin/sh"* since it is not present in the binary? 
 
 Here is where ROP technique comes to the rescue, what rop basically does is chaining functions together but how you might ask. 
 We basically creating a new stack frame on top of the other.
-As we saw earlier every function has a return address, it needs to know when it is finished where to return to. 
-That goes for every living function out there. 
+As we saw earlier every function has a return address, it needs to know where to return once the execution is finished.
 
-Now the stack as we already know goes as follows:
-
-- call to the function
-- return address 
-- arguments
 
 With that particular order so ret address goes immediately after the function call.
 
-Finding out how strcpy works will help us in order to find out how we can copy our string into some writable memory pointed by us.
+Finding out how *strcpy* function works will help us in order to find out how we can copy our string into some writable memory pointed by us.
 
 From the C manual we see that strcpy function goes as follows:
 
@@ -153,7 +146,7 @@ Yeah, when we done copying one byte in order to copy the next one we need to re-
 How are we gonna do that ?
 
 What we are looking for here are "gadgets" what these will actually do is help us chain functions together.
-Gadgets are small instructions sequences ending with a "ret" instruction.
+Gadgets are small instructions sequences ending with "ret" instruction.
 What this will do is pop the arguments from the stack and execute them. 
 Remember "strcpy" function takes two arguments so we need a pop pop ret instruction.
 
@@ -189,7 +182,7 @@ ROPgadget --binary rop
 ```
 We are gonna choose "0x080484f7" to do our work.
 
-We also need the "/bin/sh" characters in bytes of course in order to craft our string.
+We also need the "/bin/sh" characters in bytes of course in order to craft our the whole string.
 ROPgadget again to the rescue 
 
 ```
@@ -204,8 +197,9 @@ Memory bytes information
 0x08048142 : 's'
 0x08048326 : 'h'
 ```
- 
-We have what we need,  to sum it up:
+What this does is simply searching the binary in various sections in order to find the characters.
+
+We have what we need, let's sum it up:
 
 - stcrpy@plt 0x08048320 
 - system@plt 0x08048330 
