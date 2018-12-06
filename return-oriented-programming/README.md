@@ -114,7 +114,7 @@ Anyway lets proceed.
 
 What do we have so far ?
 
-- 1034 bytes to overwrite ret addr 
+- 1036 bytes to overwrite ret addr 
 - ASLR and NX enabled (so sniffing shellcode inside the stack and hardcoding a return address is not an option)
 - Functions already present in the binary which they might prove to be useful (system and strcpy)
 
