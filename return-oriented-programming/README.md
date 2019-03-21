@@ -125,9 +125,6 @@ Here is where ROP technique comes to the rescue, what rop basically does is chai
 We basically creating a new stack frame on top of the other.
 As we saw earlier every function has a return address, it needs to know where to return once the execution is finished.
 
-
-With that particular order so ret address goes immediately after the function call.
-
 Finding out how *strcpy* function works will help us in order to find out how we can copy our string into some writable memory pointed by us.
 
 From the C manual we see that strcpy function goes as follows:
